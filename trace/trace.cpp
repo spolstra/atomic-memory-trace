@@ -35,6 +35,7 @@
 #include <boost/bimap/set_of.hpp>
 #include <boost/bimap/multiset_of.hpp>
 
+using namespace std;
 /* ===================================================================== */
 /* Global Variables */
 /* ===================================================================== */
