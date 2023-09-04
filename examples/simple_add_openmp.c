@@ -9,6 +9,7 @@ int main(void) {
     // race condition!
     #pragma omp parallel
     {
+        // printf("omp_get_num_threads(): %d\n", omp_get_num_threads());
         atomic_trace::start_roi();
         sum += 1;
         atomic_trace::end_roi();
