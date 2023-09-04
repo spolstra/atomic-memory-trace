@@ -830,7 +830,8 @@ VOID Image(IMG img, VOID *v)
           IARG_END);
         RTN_Close(rtn);
       }
-      if (und_func_name == "atomic_trace::start_roi") {
+      if (und_func_name == "start_roi" || \
+              und_func_name == "atomic_trace::start_roi") {
         RTN_Open(rtn);
         RTN_InsertCall(rtn, IPOINT_BEFORE, (AFUNPTR)change_roi_a
           , IARG_THREAD_ID
@@ -839,7 +840,8 @@ VOID Image(IMG img, VOID *v)
           , IARG_END);
         RTN_Close(rtn);
       }
-      if (und_func_name == "atomic_trace::end_roi") {
+      if (und_func_name == "end_roi" || \
+              und_func_name == "atomic_trace::end_roi") {
         RTN_Open(rtn);
         RTN_InsertCall(rtn, IPOINT_BEFORE, (AFUNPTR)change_roi_a
           , IARG_THREAD_ID
