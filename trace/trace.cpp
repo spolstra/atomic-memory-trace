@@ -85,7 +85,7 @@ class pin_critical_section {
   bool _pred;
 };
 
-bool in_roi;
+// bool in_roi;
 bool require_roi;
 bool log_cas_fails;
 bool register_threads = false;
@@ -163,6 +163,7 @@ class thread_data_t {
     , index_lock_list()
     , buffered_entries(0)
     , lamport_timestamp(0)
+    , in_roi(false)
   {
     PIN_MutexInit(&thread_lock);
     index_lock_list.reserve(32);
@@ -302,6 +303,7 @@ class thread_data_t {
   stringstream trace_stream;
   int64_t buffered_entries;
   int64_t lamport_timestamp;
+  bool in_roi;
 
   int8_t padding2 [64];
   ////////////////////
@@ -467,7 +469,7 @@ void memory_access_header_a(THREADID pin_threadid) {
   int64_t threadid = tdata->user_threadid;
   {
     pin_critical_section CS(&tdata->thread_lock);
-    bool do_trace = in_roi || !require_roi;
+    bool do_trace = tdata->in_roi || !require_roi;
     tdata->trace_this_access = do_trace && threadid >= 0;
   }
   tdata->is_read  = false;
@@ -678,7 +680,7 @@ void change_roi_a(THREADID pin_threadid, bool new_roi, CHAR *change_to) {
   {
     pin_critical_section CS(&thread_start_fini_lock.lock);
     int64_t time = acquire_all_thread_locks() + 1;
-    in_roi = new_roi;
+    tdata->in_roi = new_roi;
     tdata->trace_stream << time << '\t' << tdata->user_threadid <<
       '\t' << change_to << "_roi\n";
     tdata->touch_buffer(pin_threadid, time, true, NULL, true);
