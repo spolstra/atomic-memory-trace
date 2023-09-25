@@ -33,4 +33,4 @@ run_stackheap: stackheap
 	$(PIN)/pin -t $(ATOMIC_MEM)/trace/obj-intel64/trace.so -i -- ./$<
 
 clean:
-	rm -f simple_add simple_add_openmp hello *.o *.out
+	rm -f simple_add simple_add_openmp hello pi_parallel *.o *.out
