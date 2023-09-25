@@ -34,13 +34,13 @@ int main() {
 
     start_time = omp_get_wtime();
 
-    atomic_trace::start_roi();
 #pragma omp parallel for reduction(+ : sum)
     for (i = 1; i <= num_steps; i++) {
+        atomic_trace::start_roi();
         x = (i - 0.5) * step;
         sum = sum + 4.0 / (1.0 + x * x);
+        atomic_trace::end_roi();
     }
-    atomic_trace::end_roi();
 
     pi = step * sum;
     run_time = omp_get_wtime() - start_time;
