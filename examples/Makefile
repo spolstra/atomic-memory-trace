@@ -14,6 +14,9 @@ simple_add_openmp: simple_add_openmp.c
 pi_parallel: pi_parallel.c
 	$(CXX) -o $@ $< $(CFLAGS) $(LDFLAGS) -fopenmp
 
+matrix_mult: matrix_mult.c
+	$(CC) -o $@ $< $(CFLAGS) $(LDFLAGS) -fopenmp
+
 hello: hello.c
 	$(CXX) -o $@ $< $(CFLAGS) $(LDFLAGS)
 
