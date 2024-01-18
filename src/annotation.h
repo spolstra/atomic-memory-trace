@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
 namespace atomic_trace {
 
 void* special_malloc(size_t size);
@@ -37,4 +38,16 @@ void start_roi();
 void end_roi();
 }
 
+extern "C" {
+    // C version
+    void start_roi();
+    void end_roi();
+}
+#else
+// C version
+void start_roi();
+void end_roi();
 #endif
+
+
+#endif // end ifndef

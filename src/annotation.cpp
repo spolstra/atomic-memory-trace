@@ -34,3 +34,8 @@ void atomic_trace::register_thread(int64_t thread_num) {
 
 void atomic_trace::start_roi() {}
 void atomic_trace::end_roi() {}
+
+extern "C" {
+    void start_roi() {};
+    void end_roi() {};
+}

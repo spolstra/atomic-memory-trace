@@ -8,16 +8,16 @@ int main(void) {
 
     #pragma omp parallel
     {
-        start_roi();
+        atomic_trace::start_roi();
         int add = 1;
-        end_roi();
+        atomic_trace::end_roi();
 
         // critical section adds a lot of tracing for some threads
         #pragma omp critical
         {
-            start_roi();
+            atomic_trace::start_roi();
             sum += add; // race if not in critical section
-            end_roi();
+            atomic_trace::end_roi();
         }
     }
 
