@@ -6,7 +6,7 @@
 
 #include "src/annotation.h"
 
-#define N 10
+#define N 50
 
 // for i in 1 2 4 8 12 16 32; do echo -n "$i threads: "; OMP_NUM_THREADS=$i ./matrix_mult; done
 

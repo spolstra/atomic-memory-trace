@@ -1,6 +1,4 @@
-/* File:     
- *     omp_mat_vect.c 
- *
+/* 
  *
  * Purpose:  
  *     Computes a parallel matrix-vector product.  Matrix
@@ -16,10 +14,8 @@
  *     y: the product vector
  *     Elapsed time for the computation
  *
- * Compile:  
- *    gcc -g -Wall -o omp_mat_vect omp_mat_vect.c -lpthread
  * Usage:
- *    omp_mat_vect <thread_count> <m> <n>
+ *    matrix_vector_mult <thread_count> <m> <n>
  *
  * Notes:  
  *     1.  Storage for A, x, y is dynamically allocated.
@@ -40,6 +36,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
+
+#include "src/annotation.h"
 
 /* Serial functions */
 void Get_args(int argc, char* argv[], int* thread_count_p, 

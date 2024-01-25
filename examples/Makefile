@@ -35,6 +35,9 @@ matrix_mult_annot_init_for: matrix_mult_annot_init_for.c
 matrix_mult_annot_init_omp_overhead: matrix_mult_annot_init_omp_overhead.c
 	$(CC) -o $@ $< $(CFLAGS) $(LDFLAGS) -fopenmp
 
+matrix_vector_mult: matrix_vector_mult.c
+	$(CC) -o $@ $< $(CFLAGS) $(LDFLAGS) -fopenmp
+
 hello: hello.c
 	$(CXX) -o $@ $< $(CFLAGS) $(LDFLAGS)
 
@@ -72,4 +75,4 @@ run_matrix_mult_annot_init_omp_overhead: matrix_mult_annot_init_omp_overhead
 	$(PIN)/pin -t $(ATOMIC_MEM)/trace/obj-intel64/trace.so -i -- ./$<
 
 clean:
-	rm -f simple_add simple_add_openmp simple_add_openmp_cpp matrix_mult matrix_mult_annot hello matrix_mult_annot_init matrix_mult_annot_init_for matrix_mult_annot_omp_overhead matrix_mult_annot_init_omp_overhead *.o *.out
+	rm -f simple_add simple_add_openmp simple_add_openmp_cpp matrix_mult matrix_mult_annot hello matrix_mult_annot_init matrix_mult_annot_init_for matrix_mult_annot_omp_overhead matrix_mult_annot_init_omp_overhead matrix_vector_mult *.o *.out
