@@ -187,8 +187,10 @@ void Omp_mat_vect(double A[], double x[], double y[], int m, int n,
     #pragma omp parallel for num_threads(thread_count) default(none) private(i, j) \
     shared(A, x, y, m, n)
     for (i = 0; i < m; i++) {
+        start_roi();
         y[i] = 0.0;
         for (j = 0; j < n; j++) y[i] += A[i * n + j] * x[j];
+        end_roi();
     }
     finish = omp_get_wtime();
     elapsed = finish - start;
