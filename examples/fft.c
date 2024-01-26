@@ -56,6 +56,8 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <unistd.h>
+
 #define PARMACS_MAX_THREADS 1024
 int ParmacsThreadNum = 0;
 pthread_t ParmacsThreads[PARMACS_MAX_THREADS];
@@ -67,8 +69,6 @@ pthread_t ParmacsThreads[PARMACS_MAX_THREADS];
         a = b;      \
         b = tmp;    \
     }
-
-#include "sim_api.h"
 
 struct GlobalMemory {
     struct {
@@ -125,12 +125,21 @@ double drand48();
 int log_2(int);
 void printerr(char *);
 
-main(argc, argv)
+void InitX(int N, double *x);
+void InitU(int N, double *u);
+void PrintArray(int N, double *x);
+void InitU2(int N, double *u, int n1);
+int BitReverse(int M, int k);
+void Transpose(int n1, double *src, double *dest, int MyNum, int MyFirst,
+        int MyLast ,int pad_length);
+void FFT1DOnce(int direction, int M, int N, double *u, double *x);
+void TwiddleOneCol(int direction, int n1, int N, int j, double *u, double *x, int pad_length);
+void Scale(int n1, int N, double *x);
+void CopyColumn(int n1, double *src, double *dest);
+void Reverse(int N, int M, double *x);
 
-    int argc;
-char *argv;
+int main(int argc, char *argv[]) {
 
-{
     int i;
     int j;
     int c;
@@ -147,7 +156,7 @@ char *argv;
         (start) = (unsigned long)(FullTime.tv_usec + FullTime.tv_sec * 1000000);
     };
 
-    SimSetThreadName("main");
+    // SimSetThreadName("main");
 
     while ((c = getopt(argc, argv, "p:m:n:l:stoh")) != -1) {
         switch (c) {
@@ -386,8 +395,8 @@ char *argv;
     InitU(N, umain); /* initialize u arrays*/
     InitU2(N, umain2, rootN);
 
-    SimRoiStart();
-    SimNamedMarker(4, "begin");
+    // SimRoiStart();
+    // SimNamedMarker(4, "begin");
 
     /* fire off P processes */
     for (i = 1; i < P; i++) {
@@ -414,8 +423,8 @@ char *argv;
         }
     }
 
-    SimNamedMarker(5, "end");
-    SimRoiEnd();
+    // SimNamedMarker(5, "end");
+    // SimRoiEnd();
 
     if (doprint) {
         if (test_result) {
@@ -526,7 +535,7 @@ void SlaveStart(int MyNum) {
     if (MyNum > 0) {
         char name[10];
         sprintf(name, "worker-%d", MyNum);
-        SimSetThreadName(name);
+        // SimSetThreadName(name);
     }
 
     /* POSSIBLE ENHANCEMENT:  Here is where one might pin processes to
@@ -696,12 +705,7 @@ double *x;
     return (cks);
 }
 
-InitX(N, x)
-
-    int N;
-double *x;
-
-{
+void InitX(int N, double *x) {
     int i, j, k;
 
     srand48(0);
@@ -714,12 +718,7 @@ double *x;
     }
 }
 
-InitU(N, u)
-
-    int N;
-double *u;
-
-{
+void InitU(int N, double *u) {
     int q;
     int j;
     int base;
@@ -738,13 +737,7 @@ double *u;
     }
 }
 
-InitU2(N, u, n1)
-
-    int N;
-double *u;
-int n1;
-
-{
+void InitU2(int N, double *u, int n1) {
     int i, j, k;
     int base;
 
@@ -757,12 +750,7 @@ int n1;
     }
 }
 
-BitReverse(M, k)
-
-    int M;
-int k;
-
-{
+int BitReverse(int M, int k) {
     int i;
     int j;
     int tmp;
@@ -788,6 +776,7 @@ double *x;
 double *upriv;
 double *scratch;
 double *umain2;
+int MyNum;
 int MyFirst;
 int MyLast;
 int pad_length;
@@ -865,12 +854,12 @@ struct GlobalMemory *Global;
 
     /* do n1 1D FFTs on columns */
     for (j = MyFirst; j < MyLast; j++) {
-        SimMarker(1, j);
+        // SimMarker(1, j);
         FFT1DOnce(direction, m1, n1, upriv,
                   &scratch[2 * j * (n1 + pad_length)]);
         TwiddleOneCol(direction, n1, N, j, umain2,
                       &scratch[2 * j * (n1 + pad_length)], pad_length);
-        SimMarker(2, j);
+        // SimMarker(2, j);
     }
 
     {
@@ -1055,17 +1044,7 @@ struct GlobalMemory *Global;
     };
 }
 
-TwiddleOneCol(direction, n1, N, j, u, x, pad_length)
-
-    int direction;
-int n1;
-int N;
-int j;
-double *u;
-double *x;
-int pad_length;
-
-{
+void TwiddleOneCol(int direction, int n1, int N, int j, double *u, double *x, int pad_length) {
     int i;
     double omega_r;
     double omega_c;
@@ -1086,13 +1065,7 @@ int pad_length;
     }
 }
 
-Scale(n1, N, x)
-
-    int n1;
-int N;
-double *x;
-
-{
+void Scale(int n1, int N, double *x) {
     int i;
 
     for (i = 0; i < n1; i++) {
@@ -1101,17 +1074,7 @@ double *x;
     }
 }
 
-Transpose(n1, src, dest, MyNum, MyFirst, MyLast, pad_length)
-
-    int n1;
-double *src;
-double *dest;
-int MyNum;
-int MyFirst;
-int MyLast;
-int pad_length;
-
-{
+void Transpose(int n1, double *src, double *dest, int MyNum, int MyFirst, int MyLast, int pad_length) {
     int i;
     int j;
     int k;
@@ -1194,13 +1157,7 @@ int pad_length;
     }
 }
 
-CopyColumn(n1, src, dest)
-
-    int n1;
-double *src;
-double *dest;
-
-{
+void CopyColumn(int n1, double *src, double *dest) {
     int i;
 
     for (i = 0; i < n1; i++) {
@@ -1209,13 +1166,7 @@ double *dest;
     }
 }
 
-Reverse(N, M, x)
-
-    int N;
-int M;
-double *x;
-
-{
+void Reverse(int N, int M, double *x) {
     int j, k;
 
     for (k = 0; k < N; k++) {
@@ -1227,15 +1178,7 @@ double *x;
     }
 }
 
-FFT1DOnce(direction, M, N, u, x)
-
-    int direction;
-int M;
-int N;
-double *u;
-double *x;
-
-{
+void FFT1DOnce(int direction, int M, int N, double *u, double *x) {
     int j;
     int k;
     int q;
@@ -1280,12 +1223,7 @@ double *x;
     }
 }
 
-PrintArray(N, x)
-
-    int N;
-double *x;
-
-{
+void PrintArray(int N, double *x) {
     int i, j, k;
 
     for (i = 0; i < rootN; i++) {

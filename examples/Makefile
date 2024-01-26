@@ -42,7 +42,7 @@ matrix_vector_mult_omp_overhead: matrix_vector_mult_omp_overhead.c
 	$(CC) -o $@ $< $(CFLAGS) $(LDFLAGS) -fopenmp
 
 fft: fft.c
-	$(CC) -o $@ $< $(CFLAGS) $(LDFLAGS) 
+	$(CC) -o $@ $< $(CFLAGS) $(LDFLAGS)  -lm
 
 hello: hello.c
 	$(CXX) -o $@ $< $(CFLAGS) $(LDFLAGS)
