@@ -80,11 +80,16 @@ run_matrix_mult_annot_init_for: matrix_mult_annot_init_for
 run_matrix_mult_annot_init_omp_overhead: matrix_mult_annot_init_omp_overhead
 	$(PIN)/pin -t $(ATOMIC_MEM)/trace/obj-intel64/trace.so -i -- ./$<
 
+# Set P, M and N
 run_matrix_vector_mult: matrix_vector_mult
 	$(PIN)/pin -t $(ATOMIC_MEM)/trace/obj-intel64/trace.so -i -- ./$< $P $M $N
 
+# Set P, M and N
 run_matrix_vector_mult_omp_overhead: matrix_vector_mult_omp_overhead
 	$(PIN)/pin -t $(ATOMIC_MEM)/trace/obj-intel64/trace.so -i -- ./$< $P $M $N
 
+# Set P
+run_fft: fft
+	$(PIN)/pin -t $(ATOMIC_MEM)/trace/obj-intel64/trace.so -i -- ./$< -p $P
 clean:
 	rm -f simple_add simple_add_openmp simple_add_openmp_cpp matrix_mult matrix_mult_annot hello matrix_mult_annot_init matrix_mult_annot_init_for matrix_mult_annot_omp_overhead matrix_mult_annot_init_omp_overhead matrix_vector_mult matrix_vector_mult_omp_overhead fft *.o *.out

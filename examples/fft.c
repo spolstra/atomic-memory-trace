@@ -58,6 +58,8 @@
 #include <sys/time.h>
 #include <unistd.h>
 
+#include "src/annotation.h"
+
 #define PARMACS_MAX_THREADS 1024
 int ParmacsThreadNum = 0;
 pthread_t ParmacsThreads[PARMACS_MAX_THREADS];
@@ -532,6 +534,8 @@ void SlaveStart(int MyNum) {
     int MyFirst;
     int MyLast;
 
+    start_roi(); // Activate address tracing
+
     if (MyNum > 0) {
         char name[10];
         sprintf(name, "worker-%d", MyNum);
@@ -653,6 +657,8 @@ void SlaveStart(int MyNum) {
         Global->finishtime = finish;
         Global->initdonetime = initdone;
     }
+
+    end_roi(); // Stop address tracing here.
 }
 
 double TouchArray(x, scratch, u, upriv, N, MyNum, MyFirst, MyLast)
