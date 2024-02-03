@@ -2,13 +2,20 @@
 
 TOOLDIR=/home/spolstra/projects/psa-tools
 
+if [ $# -ne 1 ]; then
+    echo "usage: $0 run_target (eg. run_matrix_vector_mult)"
+    exit 1
+fi
+
+TARGET=$1
+
 create_traces() {
     M=$1
     N=$2
     TRACEBASE="matrix_vector_${M}_${N}"
     for P in 1 2 4 8; do
-        echo "Running P=$P M=$M N=$N make run_matrix_vector_mult"
-        P=$P M=$M N=$N make run_matrix_vector_mult
+        echo "Running P=$P M=$M N=$N make $TARGET"
+        P=$P M=$M N=$N make $TARGET
         $TOOLDIR/alignment_filter_4bytes.py memory_trace.out > filtered.out
         $TOOLDIR/atomic_trace_converter.py filtered.out ${TRACEBASE}_p${P}.trf
     done

@@ -38,8 +38,14 @@ matrix_mult_annot_init_omp_overhead: matrix_mult_annot_init_omp_overhead.c
 matrix_vector_mult: matrix_vector_mult.c
 	$(CC) -o $@ $< $(CFLAGS) $(LDFLAGS) -fopenmp
 
+matrix_vector_mult_O2: matrix_vector_mult.c
+	$(CC) -o $@ $< $(CFLAGS) -O2 $(LDFLAGS) -fopenmp
+
 matrix_vector_mult_omp_overhead: matrix_vector_mult_omp_overhead.c
 	$(CC) -o $@ $< $(CFLAGS) $(LDFLAGS) -fopenmp
+
+matrix_vector_mult_omp_overhead_O2: matrix_vector_mult_omp_overhead.c
+	$(CC) -o $@ $< $(CFLAGS) -O2 $(LDFLAGS) -fopenmp
 
 fft: fft.c
 	$(CC) -o $@ $< $(CFLAGS) $(LDFLAGS)  -lm
@@ -87,6 +93,15 @@ run_matrix_vector_mult: matrix_vector_mult
 # Set P, M and N
 run_matrix_vector_mult_omp_overhead: matrix_vector_mult_omp_overhead
 	$(PIN)/pin -t $(ATOMIC_MEM)/trace/obj-intel64/trace.so -i -- ./$< $P $M $N
+
+# Set P, M and N
+run_matrix_vector_mult_O2: matrix_vector_mult_O2
+	$(PIN)/pin -t $(ATOMIC_MEM)/trace/obj-intel64/trace.so -i -- ./$< $P $M $N
+
+# Set P, M and N
+run_matrix_vector_mult_omp_overhead_O2: matrix_vector_mult_omp_overhead_O2
+	$(PIN)/pin -t $(ATOMIC_MEM)/trace/obj-intel64/trace.so -i -- ./$< $P $M $N
+
 
 # Set P
 run_fft: fft
