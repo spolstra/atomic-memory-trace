@@ -13,8 +13,8 @@ echo "using target: $TARGET"
 create_traces() {
     TRACEBASE="matrix_mult_50_50"
     for P in 1 2 4 8; do
-        echo "Running P=$P make $TARGET"
-        P=$P make $TARGET
+        echo "Running OMP_NUM_THREADS=$P make $TARGET"
+        OMP_NUM_THREADS=$P make $TARGET
         $TOOLDIR/alignment_filter_4bytes.py memory_trace.out > filtered.out
         $TOOLDIR/atomic_trace_converter.py filtered.out ${TRACEBASE}_p${P}.trf
     done
