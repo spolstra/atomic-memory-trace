@@ -14,6 +14,9 @@ simple_add_openmp_cpp: simple_add_openmp.cpp
 simple_add_openmp: simple_add_openmp.c
 	$(CC) -o $@ $< $(CFLAGS) $(LDFLAGS) -fopenmp
 
+simple_add_example: simple_add_example.c
+	$(CC) -o $@ $< $(CFLAGS) $(LDFLAGS) -fopenmp
+
 pi_parallel: pi_parallel.c
 	$(CXX) -o $@ $< $(CFLAGS) $(LDFLAGS) -fopenmp
 
@@ -63,6 +66,9 @@ run_simple_add_openmp_cpp: simple_add_openmp_cpp
 	$(PIN)/pin -t $(ATOMIC_MEM)/trace/obj-intel64/trace.so -i -- ./$<
 
 run_simple_add_openmp: simple_add_openmp
+	$(PIN)/pin -t $(ATOMIC_MEM)/trace/obj-intel64/trace.so -i -- ./$<
+
+run_simple_add_example: simple_add_example
 	$(PIN)/pin -t $(ATOMIC_MEM)/trace/obj-intel64/trace.so -i -- ./$<
 
 run_pi_parallel: pi_parallel
