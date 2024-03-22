@@ -5,6 +5,9 @@ LDFLAGS=-L/home/spolstra/projects/atomic-memory-trace/lib -lannotation
 PIN=~/projects/pin
 ATOMIC_MEM=/home/spolstra/projects/atomic-memory-trace
 
+hello_avx: hello_avx.c
+	$(CC) -o $@ -mavx $< $(CFLAGS) $(LDFLAGS) -fopenmp
+
 stackheap: stackheap.c
 	$(CXX) -o $@ $< $(CFLAGS) $(LDFLAGS) -fopenmp
 
@@ -15,6 +18,9 @@ simple_add_openmp: simple_add_openmp.c
 	$(CC) -o $@ $< $(CFLAGS) $(LDFLAGS) -fopenmp
 
 simple_add_example: simple_add_example.c
+	$(CC) -o $@ $< $(CFLAGS) $(LDFLAGS) -fopenmp
+
+simple_add_private: simple_add_private.c
 	$(CC) -o $@ $< $(CFLAGS) $(LDFLAGS) -fopenmp
 
 pi_parallel: pi_parallel.c
@@ -59,7 +65,13 @@ hello: hello.c
 simple_add: simple_add.c
 	$(CXX) -o $@ $< $(CFLAGS) $(LDFLAGS)
 
+run_hello_avx: hello_avx
+	$(PIN)/pin -t $(ATOMIC_MEM)/trace/obj-intel64/trace.so -i -- ./$<
+	
 run_simple_add: simple_add
+	$(PIN)/pin -t $(ATOMIC_MEM)/trace/obj-intel64/trace.so -i -- ./$<
+	
+run_simple_add_private: simple_add_private
 	$(PIN)/pin -t $(ATOMIC_MEM)/trace/obj-intel64/trace.so -i -- ./$<
 	
 run_simple_add_openmp_cpp: simple_add_openmp_cpp
